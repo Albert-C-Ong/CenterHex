@@ -11,18 +11,21 @@ from hex import Hex
 
 class Hexgrid:
 
-    def __init__(self, rows):
+    def __init__(self, radius):
+        """
+        Creates a circular hexgrid given a radius size
+        """
 
-        self.rows = rows
-        self.radius = rows // 2
+        self.radius = radius
+        self.rows = (2 * radius) + 1
 
         self.grid = []
 
-        row_lengths = [x + self.radius for x in range(1, (rows - self.radius) + 1)] + \
-                    [x for x in range(rows - 1, rows - self.radius - 1, -1)]
+        row_lengths = [x + self.radius for x in range(1, (self.rows - self.radius) + 1)] + \
+                    [x for x in range(self.rows - 1, self.rows - self.radius - 1, -1)]
 
-        for length in row_lengths:
-            self.grid.append([Hex() for x in range(length)])
+        for y, length in enumerate(row_lengths):
+            self.grid.append([Hex(x, y) for x in range(length)])
 
 
     def __str__(self):
@@ -38,9 +41,27 @@ class Hexgrid:
         return output
 
 
+    def __iter__(self):
+        for each in self.grid:
+            yield 
+    
+          
+    def __getitem__(self, indices):
+
+        if not isinstance(indices, tuple):
+            raise IndexError("Must have two indices")
+        
+        else:
+            indices = tuple(indices)
+            return self.grid[indices[1]][indices[0]]
+
+
 #======================================================================================
 
 
 if __name__ == "__main__":
-    grid = Hexgrid(11)
+
+    grid = Hexgrid(6)
     print(grid)
+
+    print(grid[0, 0])
